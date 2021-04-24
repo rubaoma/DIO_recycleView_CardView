@@ -1,6 +1,8 @@
 package com.rubdev.recycleviewcard
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -10,9 +12,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.edit
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.rubdev.recycleviewcard.DetailActivity.Companion.EXTRA_CONTACT
 
 class MainActivity : AppCompatActivity(), ClickItemContactListener {
@@ -26,9 +31,38 @@ class MainActivity : AppCompatActivity(), ClickItemContactListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_menu)
 
-        bindView()
-        updateList()
         initDrawer()
+        fetchListContact()
+        bindView()
+
+
+
+    }
+
+    // metodo para mokar um retorno de api
+    private fun fetchListContact(){
+        val list =  arrayListOf(
+            Contact(
+                "Rubens Moura",
+                "(85)99999-9992",
+                "img.jpg"
+            ),
+            Contact(
+                "Talita Moura",
+                "(85)90999-0001 ",
+                "img.jpg"
+            )
+        )
+        // salva o retorno da "api" no sharedPreferences
+        getInstanceSharedPreferences().edit {
+           val json = Gson().toJson(list)
+            putString("contacts", json)
+            commit()
+        }
+    }
+
+    private fun getInstanceSharedPreferences(): SharedPreferences{
+        return getSharedPreferences("com.rubdev.PREFERENCES", Context.MODE_PRIVATE)
     }
 
 
@@ -52,24 +86,20 @@ class MainActivity : AppCompatActivity(), ClickItemContactListener {
     private fun bindView() {
         rvList.adapter = adapter
         rvList.layoutManager = LinearLayoutManager(this)
+        updateList()
     }
 
-    //    dados mokados
+    //converteu string para um objeto de classe
+    private fun getListContacts(): List<Contact>{
+        val list = getInstanceSharedPreferences().getString("contacts","[]")
+        val turnsType = object : TypeToken<List<Contact>>() {}.type
+        return Gson().fromJson(list,turnsType)
+    }
+
+
     private fun updateList() {
-        adapter.updateList(
-            arrayListOf(
-                Contact(
-                    "Rubens Moura",
-                    "(85)99999-9992",
-                    "img.jpg"
-                ),
-                Contact(
-                    "Talita Moura",
-                    "(85)90999-0001 ",
-                    "img.jpg"
-                )
-            )
-        )
+        val list = getListContacts()
+        adapter.updateList(list)
     }
 
     // Metodo que infla o layout do menu
