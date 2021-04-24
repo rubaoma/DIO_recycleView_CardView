@@ -33,10 +33,11 @@
             android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@id/iv_photograph"
             app:layout_constraintTop_toTopOf="@id/iv_photograph"
-            tolls:text="Nome de contato" />
+            tolls:text="@string/nome_contato" />
 
         <TextView
             android:id="@+id/tv_phone"
+            style="@style/TextViewDefault"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -45,7 +46,7 @@
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/iv_photograph"
             app:layout_constraintTop_toBottomOf="@+id/tv_name"
-            tolls:text="(00)00000-0000"
+            tolls:text="@string/telefone_example"
             tolls:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

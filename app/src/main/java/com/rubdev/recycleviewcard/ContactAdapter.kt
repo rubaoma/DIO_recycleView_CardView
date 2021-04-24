@@ -8,27 +8,28 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ContactAdapter: RecyclerView.Adapter<ContactAdapter.CompactAdapterViewHolder>() {
+class ContactAdapter(var listener: ClickItemContactListener) :
+    RecyclerView.Adapter<ContactAdapter.CompactAdapterViewHolder>() {
 
     //variavel que irá armazenar a lista
     private val list: MutableList<Contact> = mutableListOf()
 
     //reponsavel por gerenciar cada item da tela
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompactAdapterViewHolder {
-       val view = LayoutInflater.from(parent.context).inflate(R.layout.contact_item, parent, false)
-        return CompactAdapterViewHolder(view)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.contact_item, parent, false)
+        return CompactAdapterViewHolder(view, list, listener)
     }
 
     // ele le o item do array e popula o item na view
     override fun onBindViewHolder(holder: CompactAdapterViewHolder, position: Int) {
-            holder.bind(list[position])
+        holder.bind(list[position])
     }
 
     override fun getItemCount(): Int {
-       return list.size
+        return list.size
     }
 
-    fun updateList(list: List<Contact>){
+    fun updateList(list: List<Contact>) {
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
@@ -36,12 +37,24 @@ class ContactAdapter: RecyclerView.Adapter<ContactAdapter.CompactAdapterViewHold
 
 
     //view holder classe que ira gerenciar cada item da lista
-    class  CompactAdapterViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class CompactAdapterViewHolder(
+        itemView: View,
+        var list: List<Contact>,
+        var listener: ClickItemContactListener
+    ) : RecyclerView.ViewHolder(itemView) {
+
         private val tvName: TextView = itemView.findViewById(R.id.tv_name)
         private val tvPhone: TextView = itemView.findViewById(R.id.tv_phone)
         private val ivPhotograph: ImageView = itemView.findViewById(R.id.iv_photograph)
 
-        fun bind(contact: Contact){
+        init {
+            itemView.setOnClickListener{
+                listener.clickItemContact(list[adapterPosition])
+            }
+
+        }
+
+        fun bind(contact: Contact) {
             tvName.text = contact.name
             tvPhone.text = contact.phone
 

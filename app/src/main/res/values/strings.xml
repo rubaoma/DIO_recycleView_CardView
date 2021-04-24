@@ -4,4 +4,7 @@
     <string name="menu_2">Menu 2</string>
     <string name="open_drawer">Abrir</string>
     <string name="close_drawer">Fechar</string>
+    <string name="nome_contato">Nome do contato</string>
+    <string name="telefone_example">(00)00000-0000</string>
+    <string name="photograph">photograph</string>
 </resources>
